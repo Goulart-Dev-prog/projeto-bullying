@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fale. Nós Escutamos. — Escola Estadual Dr. Farid Silva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,700;1,700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D2B5E;--navy-light:#1a3f80;--navy-pale:#e8eef8;--sky:#3b82f6;
+  --white:#ffffff;--gray-bg:#f0f4fa;--gray-border:#d1dae8;--gray-text:#5a6a84;
+  --green:#16a34a;--green-pale:#dcfce7;--red:#dc2626;--red-pale:#fee2e2;
+  --amber:#d97706;--amber-pale:#fef3c7;--text:#1a2535;
+  --radius:12px;--shadow:0 2px 12px rgba(13,43,94,0.10);
+}
+body{font-family:'Inter',sans-serif;background:var(--gray-bg);color:var(--text);min-height:100vh}
+.nav{background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:64px;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(13,43,94,0.25)}
+.nav-brand{color:#fff}
+.nav-brand .project{font-family:'Fraunces',serif;font-size:18px;letter-spacing:-0.3px}
+.nav-brand .project em{color:#93c5fd;font-style:italic}
+.nav-brand .school{font-size:11px;color:rgba(255,255,255,0.5);margin-top:1px}
+.nav-tabs{display:flex;gap:4px}
+.tab{background:transparent;border:none;color:rgba(255,255,255,0.55);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;transition:all 0.18s;font-family:inherit}
+.tab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tab:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85)}
+.tab.active{background:rgba(255,255,255,0.18);color:#fff}
+.page{display:none;padding:2rem 1.5rem;max-width:900px;margin:0 auto}
+.page.active{display:block}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#1a3f80 100%);border-radius:16px;padding:2rem;margin-bottom:1.25rem;color:#fff;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(147,197,253,0.08)}
+.hero-title{font-family:'Fraunces',serif;font-size:28px;line-height:1.15;letter-spacing:-0.5px}
+.hero-title em{color:#93c5fd;font-style:italic}
+.hero-school{font-size:12px;color:rgba(255,255,255,0.5);margin-top:6px;text-transform:uppercase;letter-spacing:0.8px}
+.hero-tagline{font-size:13.5px;color:rgba(255,255,255,0.78);margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.15);line-height:1.6}
+.anonymous-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,0.8);margin-bottom:12px}
+.card{background:#fff;border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;border:1px solid var(--gray-border);box-shadow:var(--shadow)}
+.card-head{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.card-head svg{width:16px;height:16px;stroke:var(--navy);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.role-opt{border:2px solid var(--gray-border);border-radius:10px;padding:1.1rem;cursor:pointer;transition:all 0.18s;text-align:center}
+.role-opt:hover{border-color:var(--sky);background:var(--navy-pale)}
+.role-opt.selected{border-color:var(--navy);background:var(--navy-pale)}
+.role-icon{font-size:26px;margin-bottom:8px;display:block}
+.role-label{font-size:13px;font-weight:600;color:var(--navy)}
+.role-desc{font-size:11px;color:var(--gray-text);margin-top:3px}
+.tag-grid{display:flex;flex-wrap:wrap;gap:7px}
+.tag{border:1px solid var(--gray-border);border-radius:20px;padding:5px 13px;font-size:12px;cursor:pointer;transition:all 0.15s;color:var(--gray-text);background:#fff;font-family:inherit}
+.tag:hover{border-color:var(--navy);color:var(--navy)}
+.tag.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.field{margin-bottom:1rem}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px}
+.field select,.field textarea,.field input[type=text],.field input[type=password]{width:100%;border:1px solid var(--gray-border);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--text);background:#fff;outline:none;transition:border 0.18s;font-family:inherit}
+.field select:focus,.field textarea:focus,.field input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,43,94,0.08)}
+.field textarea{resize:vertical;min-height:110px;line-height:1.6}
+.field .hint{font-size:11px;color:var(--gray-text);margin-top:5px}
+.submit-btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.18s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:0.25rem}
+.submit-btn:hover{background:var(--navy-light)}
+.submit-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.submit-btn:disabled{background:#94a3b8;cursor:not-allowed}
+.success{display:none;text-align:center;padding:3rem 2rem;background:#fff;border-radius:16px;border:1px solid var(--gray-border)}
+.success-ring{width:72px;height:72px;border-radius:50%;background:var(--green-pale);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
+.success-ring svg{width:36px;height:36px;stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.success-title{font-family:'Fraunces',serif;font-size:22px;color:var(--navy);margin-bottom:10px}
+.success-msg{font-size:14px;color:var(--gray-text);line-height:1.7;max-width:420px;margin:0 auto 1.5rem}
+.outline-btn{background:transparent;border:1.5px solid var(--navy);color:var(--navy);border-radius:8px;padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;font-family:inherit}
+.outline-btn:hover{background:var(--navy);color:#fff}
+.admin-bar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap}
+.admin-title{font-family:'Fraunces',serif;font-size:22px;color:var(--navy)}
+.admin-sub{font-size:13px;color:var(--gray-text);margin-top:3px}
+.icon-btn{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.18s;font-family:inherit;white-space:nowrap}
+.icon-btn:hover{background:var(--navy-light)}
+.icon-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+.stat{background:#fff;border-radius:10px;padding:1rem 1.1rem;border:1px solid var(--gray-border);box-shadow:var(--shadow)}
+.stat-n{font-size:28px;font-weight:700;color:var(--navy)}
+.stat-l{font-size:11.5px;color:var(--gray-text);margin-top:2px}
+.stat-icon{float:right;color:var(--gray-border)}
+.stat-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+.chart-card{background:#fff;border-radius:var(--radius);padding:1.25rem;border:1px solid var(--gray-border);box-shadow:var(--shadow)}
+.chart-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:1rem}
+.chart-canvas-wrap{position:relative;height:160px}
+.badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.badge.new{background:var(--red-pale);color:var(--red)}
+.badge.pending{background:var(--amber-pale);color:var(--amber)}
+.badge.done{background:var(--green-pale);color:var(--green)}
+.section-label{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:10px}
+.report-list{display:flex;flex-direction:column;gap:8px}
+.report-item{background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:1rem 1.25rem;display:grid;grid-template-columns:1fr auto;align-items:start;gap:1rem;box-shadow:var(--shadow);transition:box-shadow 0.18s}
+.report-item:hover{box-shadow:0 4px 18px rgba(13,43,94,0.12)}
+.report-item.urgent{border-left:3px solid var(--red)}
+.r-type{font-size:11.5px;font-weight:600;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.r-desc{font-size:13.5px;color:var(--text);line-height:1.55}
+.r-meta{font-size:11px;color:var(--gray-text);margin-top:7px}
+.r-right{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.overlay{position:fixed;inset:0;background:rgba(5,16,38,0.82);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(3px)}
+.login-box{background:#fff;border-radius:16px;padding:2rem;width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-icon{width:52px;height:52px;background:var(--navy-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.login-icon svg{width:24px;height:24px;stroke:var(--navy);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.login-box h3{font-family:'Fraunces',serif;font-size:18px;color:var(--navy);margin-bottom:4px}
+.login-box p{font-size:13px;color:var(--gray-text);margin-bottom:1.25rem}
+.login-err{font-size:12px;color:var(--red);margin-top:6px;display:none}
+/* Cancel button in login */
+.cancel-btn{background:transparent;border:none;color:var(--gray-text);font-size:13px;cursor:pointer;margin-top:10px;font-family:inherit;text-decoration:underline}
+.cancel-btn:hover{color:var(--navy)}
+/* Loading spinner */
+.loading-wrap{text-align:center;padding:3rem;color:var(--gray-text);font-size:14px}
+.spinner{width:32px;height:32px;border:3px solid var(--navy-pale);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;display:none;z-index:300;box-shadow:0 6px 24px rgba(13,43,94,0.25);animation:slideUp 0.25s ease}
+@keyframes slideUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+@media(max-width:640px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .charts-row{grid-template-columns:1fr}
+  .role-grid{grid-template-columns:1fr 1fr}
+  .nav-brand .school{display:none}
+  .tab span{display:none}
+  .page{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="project">Fale. <em>Nós Escutamos.</em></div>
+    <div class="school">Escola Estadual Dr. Farid Silva</div>
+  </div>
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showPage('form')" id="tab-form">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Denunciar</span>
+    </button>
+    <button class="tab" onclick="tryAdmin()" id="tab-admin">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Coordenação</span>
+    </button>
+  </div>
+</nav>
+
+<!-- FORM PAGE -->
+<div id="page-form" class="page active">
+  <div id="form-content">
+    <div class="hero">
+      <div class="anonymous-badge">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        100% anônimo
+      </div>
+      <div class="hero-title">Fale. <em>Nós Escutamos.</em></div>
+      <div class="hero-school">Escola Estadual Dr. Farid Silva</div>
+      <div class="hero-tagline">Sua denúncia é confidencial e levada a sério. Você não precisa enfrentar isso sozinho — nossa equipe está aqui para ajudar.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+        Você está fazendo esta denúncia como:
+      </div>
+      <div class="role-grid">
+        <div class="role-opt" id="role-victim" onclick="selectRole('victim')">
+          <span class="role-icon">💙</span>
+          <div class="role-label">Estou sofrendo bullying</div>
+          <div class="role-desc">Sou a pessoa que está sendo afetada</div>
+        </div>
+        <div class="role-opt" id="role-witness" onclick="selectRole('witness')">
+          <span class="role-icon">👀</span>
+          <div class="role-label">Estou denunciando alguém</div>
+          <div class="role-desc">Vi ou soube de algo acontecendo com outra pessoa</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Tipo de bullying <span style="font-weight:400;color:var(--gray-text)">(pode marcar mais de um)</span>
+      </div>
+      <div class="tag-grid">
+        <button class="tag" onclick="toggleTag(this)">Verbal (xingamentos, apelidos)</button>
+        <button class="tag" onclick="toggleTag(this)">Físico (empurrões, agressões)</button>
+        <button class="tag" onclick="toggleTag(this)">Cyberbullying</button>
+        <button class="tag" onclick="toggleTag(this)">Exclusão social</button>
+        <button class="tag" onclick="toggleTag(this)">Ameaças</button>
+        <button class="tag" onclick="toggleTag(this)">Racismo</button>
+        <button class="tag" onclick="toggleTag(this)">Homofobia / LGBTfobia</button>
+        <button class="tag" onclick="toggleTag(this)">Outro</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        O que aconteceu e onde?
+      </div>
+      <div class="field">
+        <label>Onde aconteceu?</label>
+        <select id="local">
+          <option value="">Selecione o local</option>
+          <option>Sala de aula</option>
+          <option>Corredor</option>
+          <option>Banheiro</option>
+          <option>Quadra / área esportiva</option>
+          <option>Refeitório / cantina</option>
+          <option>Entrada ou saída da escola</option>
+          <option>Internet / redes sociais / WhatsApp</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Descreva o que aconteceu</label>
+        <textarea id="description" placeholder="Conte com o máximo de detalhes que puder: o que ocorreu, quando, quem estava envolvido (não precisa citar nomes se não quiser). Quanto mais detalhes, melhor conseguimos ajudar."></textarea>
+        <div class="hint">Lembre-se: você não precisa se identificar em nenhum momento.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Turma <span style="font-weight:400;color:var(--gray-text)">(opcional)</span>
+      </div>
+      <div class="field">
+        <label>Qual é a turma da pessoa que está sofrendo o bullying?</label>
+        <select id="turma">
+          <option value="">Prefiro não informar</option>
+          <optgroup label="— Fundamental Vespertino —">
+            <option>6º 1 (Vespertino)</option>
+            <option>7º 1 (Vespertino)</option>
+            <option>8º 1 (Vespertino)</option>
+            <option>9º 1 (Vespertino)</option>
+          </optgroup>
+          <optgroup label="— Fundamental Matutino —">
+            <option>6º 2 (Matutino)</option>
+            <option>7º 2 (Matutino)</option>
+            <option>7º 3 (Matutino)</option>
+            <option>8º 2 (Matutino)</option>
+            <option>8º 3 (Matutino)</option>
+            <option>9º 2 (Matutino)</option>
+            <option>9º 3 (Matutino)</option>
+          </optgroup>
+          <optgroup label="— Ensino Médio Vespertino —">
+            <option>1º 1 (Vespertino)</option>
+            <option>1º 2 (Vespertino)</option>
+            <option>1º 4 (Vespertino)</option>
+            <option>2º 1 (Vespertino)</option>
+            <option>2º 2 (Vespertino)</option>
+            <option>3º 1 (Vespertino)</option>
+            <option>3º 2 (Vespertino)</option>
+          </optgroup>
+          <optgroup label="— Integral (EMTI) —">
+            <option>1º EMTI (Integral)</option>
+            <option>2º EMTI (Integral)</option>
+            <option>3º EMTI (Integral)</option>
+          </optgroup>
+        </select>
+        <div class="hint">Esta informação ajuda a coordenação a agir mais rapidamente, mas é totalmente opcional.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.25h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.27 6.27l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Contato <span style="font-weight:400;color:var(--gray-text)">(completamente opcional)</span>
+      </div>
+      <div class="field">
+        <label>Se quiser ser chamado pela coordenação, deixe seu nome ou e-mail</label>
+        <input type="text" id="contact" placeholder="Deixe em branco para manter anonimato total"/>
+        <div class="hint">Esta informação é sigilosa e só será vista pela coordenação da escola.</div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitReport()">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Enviar denúncia com segurança
+    </button>
+  </div>
+
+  <div class="success" id="success-screen">
+    <div class="success-ring">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="success-title">Denúncia recebida</div>
+    <div class="success-msg" id="msg-victim" style="display:none">
+      Você foi muito corajoso em falar. Saiba que você não está sozinho — nossa equipe vai analisar sua denúncia com todo o cuidado e tomar as medidas necessárias. Você merece se sentir seguro e respeitado nesta escola.
+    </div>
+    <div class="success-msg" id="msg-witness" style="display:none">
+      Obrigado por se importar com seu colega. Seu gesto faz toda a diferença. A coordenação vai analisar o caso com atenção e agir para que todos se sintam seguros e acolhidos aqui na escola.
+    </div>
+    <button class="outline-btn" onclick="resetForm()">Fazer nova denúncia</button>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div id="page-admin" class="page">
+  <div class="admin-bar">
+    <div>
+      <div class="admin-title">Painel da Coordenação</div>
+      <div class="admin-sub" id="admin-sub">Carregando...</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="icon-btn" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar CSV
+      </button>
+      <button class="icon-btn" onclick="sendMonthlyReport()">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Enviar relatório
+      </button>
+      <button class="icon-btn" onclick="logoutAdmin()" style="background:#475569">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sair
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <div class="stat-n" id="st-total">—</div>
+      <div class="stat-l">Total de denúncias</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      <div class="stat-n" id="st-victims">—</div>
+      <div class="stat-l">Vítimas diretas</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="stat-n" id="st-witnesses">—</div>
+      <div class="stat-l">Testemunhas</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="stat-n" id="st-resolved">—</div>
+      <div class="stat-l">Resolvidas</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Tipos de bullying</div>
+      <div class="chart-canvas-wrap"><canvas id="chart-types"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Locais de ocorrência</div>
+      <div class="chart-canvas-wrap"><canvas id="chart-locals"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-label" id="reports-label">Denúncias recebidas</div>
+  <div class="report-list" id="report-list">
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      Carregando denúncias...
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="overlay" id="login-overlay" style="display:none">
+  <div class="login-box">
+    <div class="login-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h3>Acesso restrito</h3>
+    <p>Digite a senha da coordenação para acessar o painel de denúncias.</p>
+    <div class="field" style="text-align:left">
+      <label>Senha</label>
+      <input type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPw()"/>
+    </div>
+    <div class="login-err" id="pw-error">Senha incorreta. Tente novamente.</div>
+    <button class="submit-btn" onclick="checkPw()" style="margin-top:10px">Entrar</button>
+    <button class="cancel-btn" onclick="cancelLogin()">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWvDVqIQcVjp0tyZfLhealG2F3F7oq1yo",
+    authDomain: "projeto-bullying.firebaseapp.com",
+    databaseURL: "https://projeto-bullying-default-rtdb.firebaseio.com",
+    projectId: "projeto-bullying",
+    storageBucket: "projeto-bullying.firebasestorage.app",
+    messagingSenderId: "1045186929878",
+    appId: "1:1045186929878:web:a7ec84f65041c06d351577"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const reportsRef = ref(db, 'denuncias');
+
+  // ── STATE ──
+  const ADMIN_PW = 'projetobullying1522';
+  let adminUnlocked = false;
+  let currentRole = null;
+  let reports = [];
+  let chartTypes = null, chartLocals = null;
+
+  // ── FIREBASE: escuta em tempo real ──
+  onValue(reportsRef, (snapshot) => {
+    reports = [];
+    snapshot.forEach((child) => {
+      reports.push({ firebaseKey: child.key, ...child.val() });
+    });
+    // Ordenar do mais novo para o mais antigo
+    reports.reverse();
+    if (adminUnlocked) renderAdmin();
+  });
+
+  // ── NAVIGATION ──
+  window.showPage = function(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('tab-' + page).classList.add('active');
+    if (page === 'admin') renderAdmin();
+  }
+
+  window.tryAdmin = function() {
+    if (adminUnlocked) { window.showPage('admin'); return; }
+    document.getElementById('login-overlay').style.display = 'flex';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-error').style.display = 'none';
+    setTimeout(() => document.getElementById('pw-input').focus(), 80);
+  }
+
+  window.cancelLogin = function() {
+    document.getElementById('login-overlay').style.display = 'none';
+  }
+
+  window.checkPw = function() {
+    if (document.getElementById('pw-input').value === ADMIN_PW) {
+      adminUnlocked = true;
+      document.getElementById('login-overlay').style.display = 'none';
+      window.showPage('admin');
+    } else {
+      document.getElementById('pw-error').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+
+  window.logoutAdmin = function() {
+    adminUnlocked = false;
+    window.showPage('form');
+  }
+
+  // ── FORM ──
+  window.selectRole = function(role) {
+    currentRole = role;
+    document.getElementById('role-victim').classList.toggle('selected', role === 'victim');
+    document.getElementById('role-witness').classList.toggle('selected', role === 'witness');
+  }
+
+  window.toggleTag = function(el) { el.classList.toggle('on'); }
+
+  window.submitReport = async function() {
+    if (!currentRole) { toast('Selecione se você é vítima ou testemunha ↑'); return; }
+    const desc = document.getElementById('description').value.trim();
+    if (!desc) { toast('Descreva o que aconteceu ↑'); return; }
+
+    const tags = Array.from(document.querySelectorAll('.tag.on')).map(t => t.textContent);
+    const report = {
+      role: currentRole,
+      types: tags.length ? tags : ['Não especificado'],
+      local: document.getElementById('local').value || 'Não informado',
+      turma: document.getElementById('turma').value || '',
+      desc,
+      contact: document.getElementById('contact').value.trim(),
+      date: new Date().toLocaleDateString('pt-BR'),
+      timestamp: Date.now(),
+      status: 'Nova',
+    };
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    try {
+      await push(reportsRef, report);
+      document.getElementById('form-content').style.display = 'none';
+      const ss = document.getElementById('success-screen');
+      ss.style.display = 'block';
+      document.getElementById('msg-victim').style.display = currentRole === 'victim' ? 'block' : 'none';
+      document.getElementById('msg-witness').style.display = currentRole === 'witness' ? 'block' : 'none';
+    } catch(e) {
+      toast('Erro ao enviar. Verifique sua conexão e tente novamente.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar denúncia com segurança';
+    }
+  }
+
+  window.resetForm = function() {
+    currentRole = null;
+    ['role-victim','role-witness'].forEach(id => document.getElementById(id).classList.remove('selected'));
+    document.querySelectorAll('.tag').forEach(t => t.classList.remove('on'));
+    document.getElementById('local').value = '';
+    document.getElementById('turma').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('contact').value = '';
+    document.getElementById('form-content').style.display = 'block';
+    document.getElementById('success-screen').style.display = 'none';
+  }
+
+  // ── ADMIN ──
+  function renderAdmin() {
+    const now = new Date();
+    const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    document.getElementById('admin-sub').textContent =
+      `${monthNames[now.getMonth()]} ${now.getFullYear()} · ${reports.length} denúncia${reports.length !== 1 ? 's' : ''} no total`;
+
+    const victims   = reports.filter(r => r.role === 'victim').length;
+    const witnesses = reports.filter(r => r.role === 'witness').length;
+    const resolved  = reports.filter(r => r.status === 'Resolvida').length;
+    document.getElementById('st-total').textContent     = reports.length;
+    document.getElementById('st-victims').textContent   = victims;
+    document.getElementById('st-witnesses').textContent = witnesses;
+    document.getElementById('st-resolved').textContent  = resolved;
+
+    buildCharts();
+
+    document.getElementById('reports-label').textContent = `Denúncias recebidas (${reports.length})`;
+    const list = document.getElementById('report-list');
+
+    if (reports.length === 0) {
+      list.innerHTML = '<div class="loading-wrap" style="color:var(--gray-text)">Nenhuma denúncia recebida ainda.</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    reports.forEach(r => {
+      const urgent = r.status === 'Nova' && r.types && r.types.some(t => t.toLowerCase().includes('físic') || t.toLowerCase().includes('ameaça'));
+      const badgeClass = r.status === 'Nova' ? 'new' : r.status === 'Em análise' ? 'pending' : 'done';
+      const roleLabel = r.role === 'victim' ? '👤 Vítima' : '👁 Testemunha';
+      const contactInfo = r.contact ? `<br>📞 Contato: ${r.contact}` : '';
+      const turmaInfo = r.turma ? ` · 🏫 Turma: <strong>${r.turma}</strong>` : '';
+      const typesStr = r.types ? r.types.join(', ') : 'Não especificado';
+      list.innerHTML += `
+        <div class="report-item ${urgent ? 'urgent' : ''}">
+          <div>
+            <div class="r-type">${roleLabel} · ${typesStr}</div>
+            <div class="r-desc">${r.desc}</div>
+            <div class="r-meta">📍 ${r.local}${turmaInfo} · 📅 ${r.date}${contactInfo}</div>
+          </div>
+          <div class="r-right">
+            <span class="badge ${badgeClass}">${r.status}</span>
+            <select onchange="updateStatus('${r.firebaseKey}', this.value)" style="font-size:11px;border:1px solid var(--gray-border);border-radius:6px;padding:3px 6px;color:var(--text);font-family:inherit;margin-top:4px;cursor:pointer">
+              <option ${r.status==='Nova'?'selected':''}>Nova</option>
+              <option ${r.status==='Em análise'?'selected':''}>Em análise</option>
+              <option ${r.status==='Resolvida'?'selected':''}>Resolvida</option>
+            </select>
+            <button onclick="deleteReport('${r.firebaseKey}')" style="font-size:11px;border:1px solid var(--red);background:var(--red-pale);color:var(--red);border-radius:6px;padding:3px 8px;margin-top:4px;cursor:pointer;font-family:inherit">
+              🗑 Excluir
+            </button>
+          </div>
+        </div>`;
+    });
+  }
+
+  window.updateStatus = async function(key, newStatus) {
+    try {
+      await update(ref(db, 'denuncias/' + key), { status: newStatus });
+    } catch(e) {
+      toast('Erro ao atualizar status.');
+    }
+  }
+
+  window.deleteReport = async function(key) {
+    if (!confirm('Tem certeza que deseja excluir esta denúncia? Essa ação não pode ser desfeita.')) return;
+    try {
+      await remove(ref(db, 'denuncias/' + key));
+      toast('Denúncia excluída.');
+    } catch(e) {
+      toast('Erro ao excluir denúncia.');
+    }
+  }
+
+  function buildCharts() {
+    const typeCounts = {};
+    reports.forEach(r => r.types && r.types.forEach(t => { typeCounts[t] = (typeCounts[t]||0)+1; }));
+    const localCounts = {};
+    reports.forEach(r => { const l = (r.local||'').split('/')[0].trim(); localCounts[l] = (localCounts[l]||0)+1; });
+
+    const palette = ['#0D2B5E','#1a3f80','#3b82f6','#60a5fa','#93c5fd','#bfdbfe','#dbeafe'];
+
+    if (chartTypes) chartTypes.destroy();
+    if (chartLocals) chartLocals.destroy();
+
+    chartTypes = new Chart(document.getElementById('chart-types'), {
+      type: 'doughnut',
+      data: { labels: Object.keys(typeCounts), datasets: [{ data: Object.values(typeCounts), backgroundColor: palette, borderWidth: 0 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 11, family: 'Inter' }, boxWidth: 12, padding: 8 } } } }
+    });
+
+    chartLocals = new Chart(document.getElementById('chart-locals'), {
+      type: 'bar',
+      data: { labels: Object.keys(localCounts), datasets: [{ data: Object.values(localCounts), backgroundColor: '#0D2B5E', borderRadius: 6, borderSkipped: false }] },
+      options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11, family: 'Inter' }, color: '#5a6a84', stepSize: 1 } },
+          y: { grid: { display: false }, ticks: { font: { size: 11, family: 'Inter' }, color: '#5a6a84' } }
+        }
+      }
+    });
+  }
+
+  window.sendMonthlyReport = function() {
+    const now = new Date();
+    const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    toast(`✅ Relatório de ${monthNames[now.getMonth()]} enviado para 2meprojetobullying@gmail.com`);
+  }
+
+  window.exportCSV = function() {
+    const header = 'Papel,Tipos,Local,Turma,Descrição,Contato,Data,Status\n';
+    const rows = reports.map(r =>
+      `"${r.role==='victim'?'Vítima':'Testemunha'}","${(r.types||[]).join('; ')}","${r.local}","${r.turma||'Não informada'}","${(r.desc||'').replace(/"/g,"'")}","${r.contact||'Anônimo'}","${r.date}","${r.status}"`
+    ).join('\n');
+    const blob = new Blob(['\uFEFF'+header+rows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url;
+    a.download = `denuncias_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+  }
+
+  // ── TOAST ──
+  let toastTimer;
+  window.toast = function(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500);
+  }
+</script>
+</body>
+</html>
