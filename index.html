@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fale. Nós Escutamos. — Escola Estadual Dr. Farid Silva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,700;1,700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!-- CSS externo -->
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="project">Fale. <em>Nós Escutamos.</em></div>
+    <div class="school">Escola Estadual Dr. Farid Silva</div>
+  </div>
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showPage('form')" id="tab-form">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Denunciar</span>
+    </button>
+    <button class="tab" onclick="tryAdmin()" id="tab-admin">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Coordenação</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ FORMULÁRIO ══ -->
+<div id="page-form" class="page active">
+  <div id="form-content">
+    <div class="hero">
+      <div class="anonymous-badge">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        100% anônimo
+      </div>
+      <div class="hero-title">Fale. <em>Nós Escutamos.</em></div>
+      <div class="hero-school">Escola Estadual Dr. Farid Silva</div>
+      <div class="hero-tagline">Sua denúncia é confidencial e levada a sério. Você não precisa enfrentar isso sozinho — nossa equipe está aqui para ajudar.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+        Você está fazendo esta denúncia como:
+      </div>
+      <div class="role-grid">
+        <div class="role-opt" id="role-victim" onclick="selectRole('victim')">
+          <span class="role-icon">💙</span>
+          <div class="role-label">Estou sofrendo bullying</div>
+          <div class="role-desc">Sou a pessoa que está sendo afetada</div>
+        </div>
+        <div class="role-opt" id="role-witness" onclick="selectRole('witness')">
+          <span class="role-icon">👀</span>
+          <div class="role-label">Estou denunciando alguém</div>
+          <div class="role-desc">Vi ou soube de algo acontecendo com outra pessoa</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Tipo de bullying <span style="font-weight:400;color:var(--gray-text)">(pode marcar mais de um)</span>
+      </div>
+      <div class="tag-grid">
+        <button class="tag" onclick="toggleTag(this)">Verbal (xingamentos, apelidos)</button>
+        <button class="tag" onclick="toggleTag(this)">Físico (empurrões, agressões)</button>
+        <button class="tag" onclick="toggleTag(this)">Cyberbullying</button>
+        <button class="tag" onclick="toggleTag(this)">Exclusão social</button>
+        <button class="tag" onclick="toggleTag(this)">Ameaças</button>
+        <button class="tag" onclick="toggleTag(this)">Racismo</button>
+        <button class="tag" onclick="toggleTag(this)">Homofobia / LGBTfobia</button>
+        <button class="tag" onclick="toggleTag(this)">Outro</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        O que aconteceu e onde?
+      </div>
+      <div class="field">
+        <label>Onde aconteceu?</label>
+        <select id="local">
+          <option value="">Selecione o local</option>
+          <option>Sala de aula</option>
+          <option>Corredor</option>
+          <option>Banheiro</option>
+          <option>Quadra / área esportiva</option>
+          <option>Refeitório / cantina</option>
+          <option>Entrada ou saída da escola</option>
+          <option>Internet / redes sociais / WhatsApp</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Descreva o que aconteceu</label>
+        <textarea id="description" placeholder="Conte com o máximo de detalhes que puder. Quanto mais detalhes, melhor conseguimos ajudar."></textarea>
+        <div class="hint">Você não precisa se identificar em nenhum momento.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Turma <span style="font-weight:400;color:var(--gray-text)">(opcional)</span>
+      </div>
+      <div class="field">
+        <label>Qual é a turma da pessoa que está sofrendo o bullying?</label>
+        <select id="turma">
+          <option value="">Prefiro não informar</option>
+          <optgroup label="— Fundamental Vespertino —">
+            <option>6º 1 (Vespertino)</option><option>7º 1 (Vespertino)</option>
+            <option>8º 1 (Vespertino)</option><option>9º 1 (Vespertino)</option>
+          </optgroup>
+          <optgroup label="— Fundamental Matutino —">
+            <option>6º 2 (Matutino)</option><option>7º 2 (Matutino)</option><option>7º 3 (Matutino)</option>
+            <option>8º 2 (Matutino)</option><option>8º 3 (Matutino)</option>
+            <option>9º 2 (Matutino)</option><option>9º 3 (Matutino)</option>
+          </optgroup>
+          <optgroup label="— Ensino Médio Vespertino —">
+            <option>1º 1 (Vespertino)</option><option>1º 2 (Vespertino)</option><option>1º 4 (Vespertino)</option>
+            <option>2º 1 (Vespertino)</option><option>2º 2 (Vespertino)</option>
+            <option>3º 1 (Vespertino)</option><option>3º 2 (Vespertino)</option>
+          </optgroup>
+          <optgroup label="— Integral (EMTI) —">
+            <option>1º EMTI (Integral)</option><option>2º EMTI (Integral)</option><option>3º EMTI (Integral)</option>
+          </optgroup>
+        </select>
+        <div class="hint">Ajuda a coordenação a agir mais rapidamente, mas é totalmente opcional.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.25h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.27 6.27l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Contato <span style="font-weight:400;color:var(--gray-text)">(completamente opcional)</span>
+      </div>
+      <div class="field">
+        <label>Se quiser ser chamado pela coordenação, deixe seu nome ou e-mail</label>
+        <input type="text" id="contact" placeholder="Deixe em branco para manter anonimato total"/>
+        <div class="hint">Esta informação é sigilosa e só será vista pela coordenação.</div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitReport()">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Enviar denúncia com segurança
+    </button>
+  </div>
+
+  <div class="success" id="success-screen">
+    <div class="success-ring"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="success-title">Denúncia recebida</div>
+    <div class="success-msg" id="msg-victim" style="display:none">Você foi muito corajoso em falar. Saiba que você não está sozinho — nossa equipe vai analisar sua denúncia com todo o cuidado. Você merece se sentir seguro e respeitado nesta escola.</div>
+    <div class="success-msg" id="msg-witness" style="display:none">Obrigado por se importar com seu colega. Seu gesto faz toda a diferença. A coordenação vai analisar o caso e agir para que todos se sintam seguros aqui na escola.</div>
+    <button class="outline-btn" onclick="resetForm()">Fazer nova denúncia</button>
+  </div>
+</div>
+
+<!-- ══ PAINEL ADMIN ══ -->
+<div id="page-admin" class="page">
+  <div class="admin-bar">
+    <div>
+      <div class="admin-title">Painel da Coordenação</div>
+      <div class="admin-sub" id="admin-sub">Carregando...</div>
+    </div>
+    <div class="btn-row">
+      <button class="icon-btn" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar CSV
+      </button>
+      <button class="icon-btn" id="btn-report" onclick="sendMonthlyReport()">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Enviar relatório
+      </button>
+      <button class="icon-btn" onclick="logoutAdmin()" style="background:#475569">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sair
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <div class="stat-n" id="st-total">—</div><div class="stat-l">Total de denúncias</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      <div class="stat-n" id="st-victims">—</div><div class="stat-l">Vítimas diretas</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="stat-n" id="st-witnesses">—</div><div class="stat-l">Testemunhas</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="stat-n" id="st-resolved">—</div><div class="stat-l">Arquivadas</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card"><div class="chart-title">Tipos de bullying</div><div class="chart-canvas-wrap"><canvas id="chart-types"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Locais de ocorrência</div><div class="chart-canvas-wrap"><canvas id="chart-locals"></canvas></div></div>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="admin-tab active" id="atab-active" onclick="switchTab('active')">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Ativas <span class="tab-count" id="cnt-active">0</span>
+    </button>
+    <button class="admin-tab" id="atab-archive" onclick="switchTab('archive')">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="20 6 9 17 4 12"/></svg>
+      Arquivo <span class="tab-count" id="cnt-archive">0</span>
+    </button>
+    <button class="admin-tab" id="atab-trash" onclick="switchTab('trash')">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      Lixeira <span class="tab-count" id="cnt-trash">0</span>
+    </button>
+  </div>
+
+  <div id="panel-active">
+    <div class="section-top">
+      <span class="section-label">Denúncias ativas (<span id="cnt-active-label">0</span>)</span>
+    </div>
+    <div class="report-list" id="list-active"><div class="loading-wrap"><div class="spinner"></div>Carregando...</div></div>
+  </div>
+
+  <div id="panel-archive" style="display:none">
+    <div class="info-badge green">✅ Arquivo seguro — denúncias resolvidas</div>
+    <div class="section-top">
+      <span class="section-label">Arquivo de resolvidas (<span id="cnt-archive-label">0</span>)</span>
+    </div>
+    <div class="report-list" id="list-archive"><div class="loading-wrap"><div class="spinner"></div>Carregando...</div></div>
+  </div>
+
+  <div id="panel-trash" style="display:none">
+    <div class="info-badge red">🗑 Lixeira — apagadas manualmente</div>
+    <div class="section-top">
+      <span class="section-label">Lixeira (<span id="cnt-trash-label">0</span>)</span>
+      <button onclick="emptyTrash()" class="small-btn red">❌ Esvaziar lixeira</button>
+    </div>
+    <div class="report-list" id="list-trash"><div class="loading-wrap"><div class="spinner"></div>Carregando...</div></div>
+  </div>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div class="overlay" id="login-overlay" style="display:none">
+  <div class="login-box">
+    <div class="login-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <h3>Acesso restrito</h3>
+    <p>Área exclusiva da coordenação da escola.</p>
+    <div class="field" style="text-align:left">
+      <label>Usuário</label>
+      <input type="text" id="user-input" placeholder="Digite seu usuário" onkeydown="if(event.key==='Enter')document.getElementById('pw-input').focus()"/>
+    </div>
+    <div class="field" style="text-align:left;margin-top:10px">
+      <label>Senha</label>
+      <input type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPw()"/>
+    </div>
+    <div class="login-err" id="pw-error">Usuário ou senha incorretos.</div>
+    <button class="submit-btn" onclick="checkPw()" style="margin-top:14px">Entrar</button>
+    <button class="cancel-btn" onclick="cancelLogin()">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast info" id="toast"></div>
+
+<!-- EmailJS init fora do module -->
+<script>
+  emailjs.init("nhE56DfmZqMiMWVRW");
+</script>
+
+<!-- JS externo -->
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
