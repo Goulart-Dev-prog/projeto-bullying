@@ -6,8 +6,9 @@ const EMAIL_DEST   = "2meprojetobullying@gmail.com";
 // ── USUÁRIOS ──
 const USERS = {
   'daniela':           { senha: 'Daniela@mg.gov.br',  label: 'Daniela' },
-  'tatiely@mg.gov.br': { senha: 'Tatiely@mg.gov.br',  label: 'Tatiely' },
+  'tatiely':           { senha: 'Tatiely@mg.gov.br',  label: 'Tatiely' },
   'adm':               { senha: '@glj1522',             label: 'Administrador' }
+
 };
 
 // ── FIREBASE CONFIG ──
