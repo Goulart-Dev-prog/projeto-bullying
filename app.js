@@ -124,13 +124,19 @@ window.submitReport = async function() {
   const desc = document.getElementById('description').value.trim();
   if (!desc) { toast('Descreva o que aconteceu ↑', 'info'); return; }
 
+  const turma = document.getElementById('turma').value;
+
+if (!turma) {
+    toast('Selecione a turma da vítima ↑', 'info');
+    return;
+}
   const now  = new Date();
   const tags = Array.from(document.querySelectorAll('.tag.on')).map(t => t.textContent);
   const report = {
     role:      currentRole,
     types:     tags.length ? tags : ['Não especificado'],
     local:     document.getElementById('local').value   || 'Não informado',
-    turma:     document.getElementById('turma').value   || '',
+    turma: turma,
     desc,
     contact:   document.getElementById('contact').value.trim(),
     date:      now.toLocaleDateString('pt-BR'),
