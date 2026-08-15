@@ -87,8 +87,8 @@
       </div>
       <div class="field">
         <label>Onde aconteceu?</label>
-        <select id="local" required>
-          <option value="" selected disabled>Selecione o local</option>
+        <select id="local">
+          <option value="">Selecione o local</option>
           <option>Sala de aula</option>
           <option>Corredor</option>
           <option>Banheiro</option>
@@ -109,12 +109,12 @@
     <div class="card">
       <div class="card-head">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Turma
+        Turma <span style="color:var(--red)">*</span>
       </div>
       <div class="field">
-        <label>Qual é a turma da pessoa que está sofrendo o bullying?</label>
-        <select id="turma" required>
-         <option value="" selected disabled>Selecione a turma</option>
+        <label>Qual é a turma da pessoa que está sofrendo o bullying? <span style="color:var(--red);font-size:11px">(obrigatório)</span></label>
+        <select id="turma">
+          <option value="">Selecione a turma</option>
           <optgroup label="— Fundamental Vespertino —">
             <option>6º 1 (Vespertino)</option><option>7º 1 (Vespertino)</option>
             <option>8º 1 (Vespertino)</option><option>9º 1 (Vespertino)</option>
@@ -133,6 +133,7 @@
             <option>1º EMTI (Integral)</option><option>2º EMTI (Integral)</option><option>3º EMTI (Integral)</option>
           </optgroup>
         </select>
+        <div class="hint">Esta informação é essencial para que a coordenação possa identificar e ajudar a pessoa.</div>
       </div>
     </div>
 
@@ -257,15 +258,15 @@
     <h3>Acesso restrito</h3>
     <p>Área exclusiva da coordenação da escola.</p>
     <div class="field" style="text-align:left">
-      <label>Usuário</label>
-      <input type="text" id="user-input" placeholder="Digite seu usuário" onkeydown="if(event.key==='Enter')document.getElementById('pw-input').focus()"/>
+      <label>E-mail</label>
+      <input type="email" id="email-input" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')document.getElementById('pw-input').focus()"/>
     </div>
     <div class="field" style="text-align:left;margin-top:10px">
       <label>Senha</label>
       <input type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPw()"/>
     </div>
-    <div class="login-err" id="pw-error">Usuário ou senha incorretos.</div>
-    <button class="submit-btn" onclick="checkPw()" style="margin-top:14px">Entrar</button>
+    <div class="login-err" id="pw-error">E-mail ou senha incorretos.</div>
+    <button class="submit-btn" id="login-btn" onclick="checkPw()" style="margin-top:14px">Entrar</button>
     <button class="cancel-btn" onclick="cancelLogin()">Cancelar</button>
   </div>
 </div>

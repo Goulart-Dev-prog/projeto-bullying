@@ -3,17 +3,17 @@ const EJS_SERVICE  = "service_bullying";
 const EJS_TEMPLATE = "template_0lyi1sn";
 const EMAIL_DEST   = "2meprojetobullying@gmail.com";
 
-// ── USUÁRIOS ──
-const USERS = {
-  'daniela':           { senha: 'Daniela@mg.gov.br',  label: 'Daniela' },
-  'tatiely':           { senha: 'Tatiely@mg.gov.br',  label: 'Tatiely' },
-  'adm':               { senha: '@glj1522',             label: 'Administrador' }
-
+// ── MAPEAMENTO DE UID → NOME (nunca expõe senhas) ──
+const USER_LABELS = {
+  'bjuvOZ5eUIMmDjKjLEIBAquMUom1': 'Daniela',
+  'R3n6sn3omrhfvz7orlBbnclEcVd2': 'Tatiely',
+  'zMWH8vf0A8f5zyMFflEKIWNpX6Z2': 'Administrador'
 };
 
-// ── FIREBASE CONFIG ──
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+// ── FIREBASE ──
+import { initializeApp }                                          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, update, remove }       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyAWvDVqIQcVjp0tyZfLhealG2F3F7oq1yo",
@@ -27,17 +27,33 @@ const firebaseConfig = {
 
 const app        = initializeApp(firebaseConfig);
 const db         = getDatabase(app);
+const auth       = getAuth(app);
 const reportsRef = ref(db, 'denuncias');
 const trashRef   = ref(db, 'lixeira');
 
 // ── STATE ──
-let adminUnlocked = false;
 let currentUser   = null;
 let currentRole   = null;
 let reports       = [];
 let trashItems    = [];
 let chartTypes    = null;
 let chartLocals   = null;
+
+// ── MONITORA LOGIN/LOGOUT AUTOMATICAMENTE ──
+onAuthStateChanged(auth, (user) => {
+  if (user && USER_LABELS[user.uid]) {
+    // Usuário autenticado e autorizado
+    currentUser = { uid: user.uid, label: USER_LABELS[user.uid] };
+    document.getElementById('login-overlay').style.display = 'none';
+    window.showPage('admin');
+  } else if (user) {
+    // Usuário autenticado mas não autorizado (segurança extra)
+    signOut(auth);
+    showLoginError('Acesso não autorizado.');
+  } else {
+    currentUser = null;
+  }
+});
 
 // ── FIREBASE LISTENERS ──
 onValue(reportsRef, (snapshot) => {
@@ -46,7 +62,7 @@ onValue(reportsRef, (snapshot) => {
     reports.push({ firebaseKey: child.key, ...child.val() });
   });
   reports.reverse();
-  if (adminUnlocked) renderAdmin();
+  if (currentUser) renderAdmin();
 });
 
 onValue(trashRef, (snapshot) => {
@@ -55,7 +71,7 @@ onValue(trashRef, (snapshot) => {
     trashItems.push({ firebaseKey: child.key, ...child.val() });
   });
   trashItems.reverse();
-  if (adminUnlocked) renderTrash();
+  if (currentUser) renderTrash();
 });
 
 // ── NAVIGATION ──
@@ -68,38 +84,52 @@ window.showPage = function(page) {
 };
 
 window.tryAdmin = function() {
-  if (adminUnlocked) { window.showPage('admin'); return; }
+  if (currentUser) { window.showPage('admin'); return; }
   document.getElementById('login-overlay').style.display = 'flex';
-  document.getElementById('user-input').value = '';
-  document.getElementById('pw-input').value   = '';
+  document.getElementById('email-input').value = '';
+  document.getElementById('pw-input').value    = '';
   document.getElementById('pw-error').style.display = 'none';
-  setTimeout(() => document.getElementById('user-input').focus(), 80);
+  setTimeout(() => document.getElementById('email-input').focus(), 80);
 };
 
 window.cancelLogin = function() {
   document.getElementById('login-overlay').style.display = 'none';
 };
 
-window.checkPw = function() {
-  const rawU = document.getElementById('user-input').value.trim();
-  const u    = rawU.toLowerCase();
-  const pw   = document.getElementById('pw-input').value;
-  const matchKey = Object.keys(USERS).find(k => k === rawU || k === u);
-  if (matchKey && USERS[matchKey].senha === pw) {
-    adminUnlocked = true;
-    currentUser   = matchKey;
-    document.getElementById('login-overlay').style.display = 'none';
-    window.showPage('admin');
-  } else {
-    document.getElementById('pw-error').style.display = 'block';
-    document.getElementById('pw-input').value = '';
-    document.getElementById('pw-input').focus();
+function showLoginError(msg) {
+  const el = document.getElementById('pw-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+window.checkPw = async function() {
+  const email = document.getElementById('email-input').value.trim();
+  const pw    = document.getElementById('pw-input').value;
+  const btn   = document.getElementById('login-btn');
+
+  if (!email || !pw) { showLoginError('Preencha o e-mail e a senha.'); return; }
+
+  btn.disabled    = true;
+  btn.textContent = 'Entrando...';
+  document.getElementById('pw-error').style.display = 'none';
+
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+    // onAuthStateChanged cuida do resto automaticamente
+  } catch(err) {
+    let msg = 'E-mail ou senha incorretos.';
+    if (err.code === 'auth/too-many-requests') msg = 'Muitas tentativas. Tente novamente mais tarde.';
+    if (err.code === 'auth/invalid-email')     msg = 'E-mail inválido.';
+    showLoginError(msg);
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Entrar';
   }
 };
 
-window.logoutAdmin = function() {
-  adminUnlocked = false;
-  currentUser   = null;
+window.logoutAdmin = async function() {
+  await signOut(auth);
+  currentUser = null;
   window.showPage('form');
 };
 
@@ -121,22 +151,18 @@ window.toggleTag = function(el) { el.classList.toggle('on'); };
 
 window.submitReport = async function() {
   if (!currentRole) { toast('Selecione se você é vítima ou testemunha ↑', 'info'); return; }
-  const desc = document.getElementById('description').value.trim();
-  if (!desc) { toast('Descreva o que aconteceu ↑', 'info'); return; }
-
+  const desc  = document.getElementById('description').value.trim();
+  if (!desc)  { toast('Descreva o que aconteceu ↑', 'info'); return; }
   const turma = document.getElementById('turma').value;
+  if (!turma) { toast('Selecione a turma da pessoa que está sofrendo bullying ↑', 'info'); return; }
 
-if (!turma) {
-    toast('Selecione a turma da vítima ↑', 'info');
-    return;
-}
   const now  = new Date();
   const tags = Array.from(document.querySelectorAll('.tag.on')).map(t => t.textContent);
   const report = {
     role:      currentRole,
     types:     tags.length ? tags : ['Não especificado'],
-    local:     document.getElementById('local').value   || 'Não informado',
-    turma: turma,
+    local:     document.getElementById('local').value || 'Não informado',
+    turma,
     desc,
     contact:   document.getElementById('contact').value.trim(),
     date:      now.toLocaleDateString('pt-BR'),
@@ -174,13 +200,14 @@ window.resetForm = function() {
 
 // ── ADMIN RENDER ──
 function renderAdmin() {
+  if (!currentUser) return;
   const now    = new Date();
   const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const active   = reports.filter(r => r.status !== 'Resolvida');
   const archived = reports.filter(r => r.status === 'Resolvida');
 
   document.getElementById('admin-sub').textContent =
-    `${months[now.getMonth()]} ${now.getFullYear()} · ${reports.length} denúncia${reports.length !== 1 ? 's' : ''} no total · Logado como: ${USERS[currentUser]?.label}`;
+    `${months[now.getMonth()]} ${now.getFullYear()} · ${reports.length} denúncia${reports.length !== 1 ? 's' : ''} no total · Logado como: ${currentUser.label}`;
 
   document.getElementById('st-total').textContent     = reports.length;
   document.getElementById('st-victims').textContent   = reports.filter(r => r.role === 'victim').length;
@@ -246,10 +273,10 @@ function renderTrash() {
     return;
   }
   el.innerHTML = trashItems.map(r => {
-    const roleLabel  = r.role === 'victim' ? '👤 Vítima' : '👁 Testemunha';
-    const turmaInfo  = r.turma ? ` · 🏫 <strong>${r.turma}</strong>` : '';
-    const timeInfo   = r.time  ? ` às ${r.time}` : '';
-    const whoLabel   = USERS[r.deletedBy]?.label || r.deletedBy || 'Desconhecido';
+    const roleLabel = r.role === 'victim' ? '👤 Vítima' : '👁 Testemunha';
+    const turmaInfo = r.turma ? ` · 🏫 <strong>${r.turma}</strong>` : '';
+    const timeInfo  = r.time  ? ` às ${r.time}` : '';
+    const whoLabel  = USER_LABELS[r.deletedBy] || r.deletedBy || 'Desconhecido';
     return `<div class="report-item trashed">
       <div>
         <div class="r-type">${roleLabel} · ${(r.types||[]).join(', ')}</div>
@@ -289,7 +316,7 @@ window.moveToTrash = async function(key) {
   try {
     const entry = {
       ...report,
-      deletedBy:        currentUser,
+      deletedBy:        currentUser.uid,
       deletedAt:        `${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
       deletedTimestamp: Date.now(),
     };
@@ -325,7 +352,7 @@ window.deletePermanently = async function(key) {
 
 window.emptyTrash = async function() {
   if (!trashItems.length) { toast('Lixeira já está vazia.', 'info'); return; }
-  if (!confirm(`Excluir permanentemente TODAS as ${trashItems.length} denúncias da lixeira? Não pode ser desfeito.`)) return;
+  if (!confirm(`Excluir permanentemente TODAS as ${trashItems.length} denúncias da lixeira?`)) return;
   try {
     await remove(trashRef);
     toast('Lixeira esvaziada.', 'info');
@@ -384,6 +411,7 @@ window.sendMonthlyReport = async function() {
 Escola Estadual Dr. Farid Silva
 Período: ${mes}
 Gerado em: ${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+Enviado por: ${currentUser?.label || 'Sistema'}
 
 RESUMO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -435,8 +463,8 @@ window.exportCSV = function() {
 let toastTimer;
 window.toast = function(msg, type = 'info') {
   const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className   = `toast ${type}`;
+  el.textContent   = msg;
+  el.className     = `toast ${type}`;
   el.style.display = 'block';
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.style.display = 'none'; }, 4000);
