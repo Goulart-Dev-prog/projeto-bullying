@@ -1,3 +1,18 @@
+/**
+ * ╔══════════════════════════════════════════════════════════╗
+ * ║         FALE. NÓS ESCUTAMOS.                            ║
+ * ║         Sistema de Denúncias Anônimas Anti-Bullying     ║
+ * ║                                                          ║
+ * ║  Autor:    Vinicius Goulart                             ║
+ * ║  Turma:    2º EMTI                                      ║
+ * ║  Escola:   Escola Estadual Dr. Farid Silva              ║
+ * ║  Ano:      2026                                          ║
+ * ║                                                          ║
+ * ║  © 2026 Vinicius Goulart                                ║
+ * ║  Todos os direitos reservados.                          ║
+ * ╚══════════════════════════════════════════════════════════╝
+ */
+
 // ── EMAILJS CONFIG ──
 const EJS_SERVICE  = "service_bullying";
 const EJS_TEMPLATE = "template_0lyi1sn";
